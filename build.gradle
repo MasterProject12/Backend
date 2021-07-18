@@ -18,7 +18,8 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation "software.amazon.awssdk:dynamodb:+"
+    implementation "com.google.code.gson:gson:2.8.7"
+    implementation "com.amazonaws:aws-java-sdk-location:+"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

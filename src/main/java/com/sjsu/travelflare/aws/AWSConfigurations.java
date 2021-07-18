@@ -19,6 +19,9 @@ public class AWSConfigurations {
     @Value("${aws.secretAccess}")
     private String secretAccess;
 
+    @Value("${aws.placeindex}")
+    private String placeIndex;
+
     public String getDbName() {
         return dbName;
     }
@@ -29,5 +32,9 @@ public class AWSConfigurations {
 
     public String getSecretAccess() {
         return secretAccess;
+    }
+
+    public String getPlaceIndex() {
+        return placeIndex;
     }
 }
