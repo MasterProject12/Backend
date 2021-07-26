@@ -1,6 +1,9 @@
 package com.sjsu.travelflare.controllers;
 
 import com.sjsu.travelflare.models.geocode.ReverseGeocode;
+import com.sjsu.travelflare.models.response.exceptions.ErrorMessage;
+import com.sjsu.travelflare.models.response.exceptions.ExceptionMessages;
+import com.sjsu.travelflare.models.response.exceptions.ParameterMissingException;
 import com.sjsu.travelflare.services.DataStorage;
 import com.sjsu.travelflare.services.GeocodingService;
 import com.sjsu.travelflare.models.request.IncidentInformation;
@@ -22,7 +25,14 @@ public class AddIncidentReport {
     private GeocodingService geocodingService;
 
     @PostMapping
-    public AddIncidentResponse addIncident(@RequestBody IncidentInformation incident) {
+    public AddIncidentResponse addIncident(@RequestBody IncidentInformation incident) throws Exception {
+        if (incident.getLocation() == null) {
+            throw new ParameterMissingException(String.format(ExceptionMessages.REQUIRED_FIELD_MISSING.getMessage(), "Location"));
+        }
+
+        if (incident.getIncidentData() == null) {
+            throw new ParameterMissingException(String.format(ExceptionMessages.REQUIRED_FIELD_MISSING.getMessage(), "Incident Data"));
+        }
         ReverseGeocode reverseGeocode = geocodingService.reverseGeocode(incident.getLocation());
         final String key = reverseGeocode.toString();
         ArrayList<IncidentInformation> locationList = DataStorage.data.getOrDefault(key, new ArrayList<>());

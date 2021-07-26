@@ -1,13 +1,8 @@
 package com.sjsu.travelflare.services;
 
-import com.amazonaws.AmazonWebServiceClient;
-import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.location.AbstractAmazonLocation;
 import com.amazonaws.services.location.AmazonLocation;
-import com.amazonaws.services.location.AmazonLocationClient;
 import com.amazonaws.services.location.AmazonLocationClientBuilder;
 import com.amazonaws.services.location.model.Place;
 import com.amazonaws.services.location.model.SearchForPositionResult;
@@ -19,7 +14,6 @@ import com.sjsu.travelflare.models.networking.Networking;
 import com.sjsu.travelflare.models.request.Location;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
