@@ -1,14 +1,16 @@
 package com.sjsu.travelflare.controllers;
 
-import ch.qos.logback.classic.pattern.ClassOfCallerConverter;
+import com.sjsu.travelflare.dto.IncidentDto;
 import com.sjsu.travelflare.models.geocode.ReverseGeocode;
+import com.sjsu.travelflare.models.request.IncidentData;
 import com.sjsu.travelflare.models.request.IncidentInformation;
 import com.sjsu.travelflare.models.request.Location;
 import com.sjsu.travelflare.models.response.exceptions.ExceptionMessages;
 import com.sjsu.travelflare.models.response.exceptions.IncorrectFormatException;
 import com.sjsu.travelflare.models.response.exceptions.ParameterMissingException;
-import com.sjsu.travelflare.services.DataStorage;
+import com.sjsu.travelflare.services.IncidentService;
 import com.sjsu.travelflare.services.GeocodingService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/incident/get")
 public class GetReportedIncident {
+
+    @Autowired
+    private IncidentService incidentService;
 
     @Autowired
     private GeocodingService geocodingService;
@@ -41,7 +46,18 @@ public class GetReportedIncident {
         location.setLongitude(coordinates[1]);
         ReverseGeocode reverseGeocode = geocodingService.reverseGeocode(location);
         final String key = reverseGeocode.toString();
-        final List<IncidentInformation> incidentInformation = DataStorage.data.getOrDefault(key, new ArrayList<>());
-        return incidentInformation;
+        List<IncidentDto> incidentDtos = incidentService.getIncidents(key);
+        List<IncidentInformation> incidentInformationList = new ArrayList<>(incidentDtos.size());
+        for (final IncidentDto incidentDto : incidentDtos) {
+            IncidentInformation incidentInformation = new IncidentInformation();
+            Location location1 = new Location();
+            BeanUtils.copyProperties(incidentDto, location1);
+            incidentInformation.setLocation(location1);
+            IncidentData incidentData = new IncidentData();
+            BeanUtils.copyProperties(incidentDto, incidentData);
+            incidentInformation.setIncidentData(incidentData);
+            incidentInformationList.add(incidentInformation);
+        }
+        return incidentInformationList;
     }
 }

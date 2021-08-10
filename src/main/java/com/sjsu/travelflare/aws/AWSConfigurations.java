@@ -10,9 +10,6 @@ import org.springframework.stereotype.Component;
 @PropertySource("classpath:aws.properties")
 public class AWSConfigurations {
 
-    @Value("${aws.dbName}")
-    private String dbName;
-
     @Value("${aws.secretId}")
     private String secretId;
 
@@ -21,10 +18,6 @@ public class AWSConfigurations {
 
     @Value("${aws.placeindex}")
     private String placeIndex;
-
-    public String getDbName() {
-        return dbName;
-    }
 
     public String getSecretId() {
         return secretId;

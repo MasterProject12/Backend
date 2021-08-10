@@ -20,8 +20,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "com.google.code.gson:gson:2.8.7"
     implementation "com.amazonaws:aws-java-sdk-location:+"
+    implementation "org.springframework.boot:spring-boot-starter-data-mongodb:+"
+    implementation "com.amazonaws:aws-java-sdk-s3:+"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'junit:junit:5.0'
+    testImplementation 'org.mockito:mockito-core:+'
+    testImplementation ' io.rest-assured:rest-assured:+'
 }
 
 test {
