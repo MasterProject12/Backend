@@ -22,15 +22,16 @@ public class KinesisStreamServiceImpl implements KinesisStreamService {
 
     private final AWSConfigurations configurations;
     private static final String KINESIS_FIREHOSE_STREAM_NAME = "TravelFlare_Kinesis_Firehose";
+    private final AmazonKinesisFirehose kinesisFirehoseClient;
 
     public KinesisStreamServiceImpl(final AWSConfigurations configurations) {
         this.configurations = configurations;
+        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(configurations.getSecretId(), configurations.getSecretAccess());
+        kinesisFirehoseClient = AmazonKinesisFirehoseClient.builder().withRegion(Regions.US_WEST_2.getName()).withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).build();
     }
 
     @Override
     public void putDataToKinesisFirehoseStream(final IncidentInformation incidentInformation) {
-        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(configurations.getSecretId(), configurations.getSecretAccess());
-        AmazonKinesisFirehose kinesisFirehoseClient = AmazonKinesisFirehoseClient.builder().withRegion(Regions.US_WEST_2.getName()).withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).build();
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("latitude", incidentInformation.getLocation().getLatitude());

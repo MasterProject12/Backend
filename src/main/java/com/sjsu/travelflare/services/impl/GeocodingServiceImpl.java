@@ -26,19 +26,19 @@ public class GeocodingServiceImpl implements GeocodingService {
     private final Networking networking;
     private final AWSConfigurations awsConfigurations;
     private final LoggingService loggingService;
+    private final AmazonLocation amazonLocation;
 
     public GeocodingServiceImpl(final Networking networking, final AWSConfigurations awsConfigurations, final CloudWatchLoggingService loggingService) {
         this.networking = networking;
         this.awsConfigurations = awsConfigurations;
         this.loggingService = loggingService;
+        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(awsConfigurations.getSecretId(), awsConfigurations.getSecretAccess());
+        amazonLocation = AmazonLocationClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials))
+                .withRegion("us-west-2").build();
     }
 
     public ReverseGeocode reverseGeocode(final Location location) {
-
-        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(awsConfigurations.getSecretId(), awsConfigurations.getSecretAccess());
-        AmazonLocation amazonLocation = AmazonLocationClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials))
-                .withRegion("us-west-2").build();
 
         SearchPlaceIndexForPositionRequest searchPlaceIndexForPositionRequest = new SearchPlaceIndexForPositionRequest();
         searchPlaceIndexForPositionRequest.setIndexName(awsConfigurations.getPlaceIndex());
