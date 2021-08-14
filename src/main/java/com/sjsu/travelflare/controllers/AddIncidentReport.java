@@ -2,14 +2,16 @@ package com.sjsu.travelflare.controllers;
 
 import com.sjsu.travelflare.dto.IncidentDto;
 import com.sjsu.travelflare.models.geocode.ReverseGeocode;
-import com.sjsu.travelflare.models.request.Location;
-import com.sjsu.travelflare.models.response.exceptions.ExceptionMessages;
-import com.sjsu.travelflare.models.response.exceptions.ParameterMissingException;
-import com.sjsu.travelflare.services.IncidentService;
-import com.sjsu.travelflare.services.GeocodingService;
 import com.sjsu.travelflare.models.request.IncidentInformation;
+import com.sjsu.travelflare.models.request.Location;
 import com.sjsu.travelflare.models.response.AddIncidentResponse;
 import com.sjsu.travelflare.models.response.ResponseMessages;
+import com.sjsu.travelflare.models.response.exceptions.ExceptionMessages;
+import com.sjsu.travelflare.models.response.exceptions.ParameterMissingException;
+import com.sjsu.travelflare.services.GeocodingService;
+import com.sjsu.travelflare.services.IncidentService;
+import com.sjsu.travelflare.services.KinesisStreamService;
+import com.sjsu.travelflare.services.LoggingService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,17 +19,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-
 @RestController
 @RequestMapping("/incident/add")
 public class AddIncidentReport {
+
+    private static final String TAG = "AddIncidentReport";
 
     @Autowired
     private GeocodingService geocodingService;
 
     @Autowired
     private IncidentService incidentService;
+
+    @Autowired
+    private KinesisStreamService kinesisStreamService;
+
+    @Autowired
+    private LoggingService loggingService;
 
     @PostMapping
     public AddIncidentResponse addIncident(@RequestBody IncidentInformation incident) throws Exception {
@@ -49,6 +57,8 @@ public class AddIncidentReport {
         Location location = new Location();
         location.setLongitude(incidentDtoResult.getLongitude());
         location.setLatitude(incidentDtoResult.getLatitude());
+        kinesisStreamService.putDataToKinesisFirehoseStream(incident);
+        loggingService.log(TAG, "Successfully added incident." + incident.getLocation().toString());
         return new AddIncidentResponse(ResponseMessages.SUCCESS, location);
     }
 }

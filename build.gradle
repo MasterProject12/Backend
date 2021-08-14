@@ -8,8 +8,10 @@ group = 'com.sjsu'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
-springBoot {
-
+bootJar {
+//    baseName = "TravelFlare"
+//    version =  '0.0.1'
+    launchScript()
 }
 
 repositories {
@@ -20,8 +22,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "com.google.code.gson:gson:2.8.7"
     implementation "com.amazonaws:aws-java-sdk-location:+"
+    implementation "com.amazonaws:amazon-kinesis-client:1.11.2"
+    implementation "com.amazonaws:aws-java-sdk-cloudwatch:+"
+    implementation "com.amazonaws:aws-java-sdk-events:+"
     implementation "org.springframework.boot:spring-boot-starter-data-mongodb:+"
-    implementation "com.amazonaws:aws-java-sdk-s3:+"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'junit:junit:5.0'

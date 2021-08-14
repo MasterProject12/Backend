@@ -13,6 +13,7 @@ import com.sjsu.travelflare.models.geocode.ReverseGeocode;
 import com.sjsu.travelflare.models.networking.Networking;
 import com.sjsu.travelflare.models.request.Location;
 import com.sjsu.travelflare.services.GeocodingService;
+import com.sjsu.travelflare.services.LoggingService;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -21,12 +22,15 @@ import java.util.List;
 @Service
 public class GeocodingServiceImpl implements GeocodingService {
 
+    private static final String TAG = "GeocodingServiceImpl";
     private final Networking networking;
     private final AWSConfigurations awsConfigurations;
+    private final LoggingService loggingService;
 
-    public GeocodingServiceImpl(final Networking networking, final AWSConfigurations awsConfigurations) {
+    public GeocodingServiceImpl(final Networking networking, final AWSConfigurations awsConfigurations, final CloudWatchLoggingService loggingService) {
         this.networking = networking;
         this.awsConfigurations = awsConfigurations;
+        this.loggingService = loggingService;
     }
 
     public ReverseGeocode reverseGeocode(final Location location) {
@@ -49,6 +53,8 @@ public class GeocodingServiceImpl implements GeocodingService {
             Place place = searchForPositionResult.getPlace();
             return new ReverseGeocode(place.getCountry(), place.getRegion(), place.getSubRegion());
         }
+
+        loggingService.log(TAG, "Error in reverse geocoding the location" + location.toString());
         return null;
     }
 }
