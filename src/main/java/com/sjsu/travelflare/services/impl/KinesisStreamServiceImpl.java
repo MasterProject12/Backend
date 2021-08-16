@@ -6,7 +6,6 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.kinesisfirehose.AmazonKinesisFirehose;
 import com.amazonaws.services.kinesisfirehose.AmazonKinesisFirehoseClient;
 import com.amazonaws.services.kinesisfirehose.model.PutRecordRequest;
-import com.amazonaws.services.kinesisfirehose.model.PutRecordResult;
 import com.amazonaws.services.kinesisfirehose.model.Record;
 import com.google.gson.JsonObject;
 import com.sjsu.travelflare.aws.AWSConfigurations;

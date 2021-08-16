@@ -1,6 +1,9 @@
 package com.sjsu.travelflare.models.entity;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
 
 @Document("incidents")
 public class IncidentEntity {
@@ -12,6 +15,8 @@ public class IncidentEntity {
     private String reason;
     private String direction;
     private String speed;
+    @Indexed(name = "incident_expiration", expireAfterSeconds = 3600)
+    private Date date = new Date();
 
     public String getId() {
         return id;
