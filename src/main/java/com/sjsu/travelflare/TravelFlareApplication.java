@@ -26,6 +26,8 @@ public class TravelFlareApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationStarted() {
-        System.out.println("Travel Flare application has started at PORT::: " + applicationContext.getWebServer().getPort());
+        if (applicationContext != null && applicationContext.getWebServer() != null) {
+            System.out.println("Travel Flare application has started at PORT::: " + applicationContext.getWebServer().getPort());
+        }
     }
 }

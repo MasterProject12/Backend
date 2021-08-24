@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.services.cloudwatchlogs.CloudWatchLogsClient;
-import software.amazon.awssdk.services.cloudwatchlogs.model.InputLogEvent;
-import software.amazon.awssdk.services.cloudwatchlogs.model.PutLogEventsRequest;
-import software.amazon.awssdk.services.cloudwatchlogs.model.PutLogEventsResponse;
+import software.amazon.awssdk.services.cloudwatchlogs.model.*;
 
 @Service
 public class CloudWatchLoggingService implements LoggingService {
@@ -26,6 +24,7 @@ public class CloudWatchLoggingService implements LoggingService {
 
     @Override
     public void log(final String tag, final String message) {
+
         InputLogEvent inputLogEvent = InputLogEvent.builder()
                 .message(message)
                 .timestamp(System.currentTimeMillis())
@@ -36,9 +35,26 @@ public class CloudWatchLoggingService implements LoggingService {
                 .sequenceToken(sequenceToken)
                 .logEvents(inputLogEvent)
                 .build();
-        PutLogEventsResponse putLogEventsResponse = cloudWatchLogsClient.putLogEvents(putEventsRequest);
-        if (putLogEventsResponse != null) {
-            sequenceToken = putLogEventsResponse.nextSequenceToken();
+        try {
+            PutLogEventsResponse putLogEventsResponse = cloudWatchLogsClient.putLogEvents(putEventsRequest);
+            if (putLogEventsResponse != null) {
+                sequenceToken = putLogEventsResponse.nextSequenceToken();
+            }
+        } catch (InvalidSequenceTokenException e) {
+            final String sequenceToken = e.expectedSequenceToken();
+            if (sequenceToken != null) {
+                this.sequenceToken = sequenceToken;
+            }
+            PutLogEventsRequest putEventsRequest1 = PutLogEventsRequest.builder()
+                    .logGroupName(LOG_GROUP_NAME)
+                    .logStreamName(LOG_STREAM_NAME)
+                    .sequenceToken(sequenceToken)
+                    .logEvents(inputLogEvent)
+                    .build();
+            PutLogEventsResponse putLogEventsResponse = cloudWatchLogsClient.putLogEvents(putEventsRequest1);
+            if (putLogEventsResponse != null) {
+                this.sequenceToken = putLogEventsResponse.nextSequenceToken();
+            }
         }
     }
 }
