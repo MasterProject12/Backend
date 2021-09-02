@@ -18,6 +18,6 @@ public class TravelFlareModelsTest {
     @Test
     public void testReverseGeocode() {
         ReverseGeocode reverseGeocode = new ReverseGeocode("USA", "Ca", "Fremont");
-        Assert.assertEquals("USA-Ca-Fremont", reverseGeocode.toString());
+        Assert.assertEquals("USA-C1a-Fremont", reverseGeocode.toString());
     }
 }
